@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Flood</string>
+    <string name="wallpaper_name">Flood</string>
+    <string name="wallpaper_description">Album art that flows, and pulses when the music does.</string>
+    <string name="notif_channel">Live beats</string>
+    <string name="notif_listening_title">Flood microphone is on</string>
+    <string name="notif_listening_text">The microphone is listening while Flood or its wallpaper is on screen. Nothing is recorded.</string>
+    <string name="notif_paused_text">Paused until the wallpaper or Flood is on screen.</string>
+    <string name="notif_stop">Turn off</string>
+</resources>

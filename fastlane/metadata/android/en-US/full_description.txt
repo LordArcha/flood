@@ -1,0 +1,9 @@
+Flood is a live wallpaper. The current album cover is melted into a few soft pools of color that drift like thick liquid. A beat stirs the flow. The cover itself is not drawn as a photograph.
+
+The song and cover come from whatever player posts a media session, including Spotify, YouTube Music, Apple Music, Tidal, and SoundCloud. Notification access is optional and is only used to read that now-playing card.
+
+Live beats are measured from the audio that is already playing. The microphone stays off unless you turn it on. Nothing is recorded, and nothing is sent off the phone. Flood has no network permission.
+
+You can set the fluid scale, speed, blur, darken, and beat strength, and keep up to five presets. A preset can use the album, a tint, mono, or a picture chosen on this phone.
+
+Flood is original code, released under the MIT license. It is not affiliated with Depthware or Diffuse.
