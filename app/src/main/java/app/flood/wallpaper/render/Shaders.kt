@@ -57,7 +57,7 @@ void main() {
     float turb = clamp((scale - 0.4) / 1.6, 0.0, 1.0);
     vec2 p = vUv * mix(0.85, 2.1, turb);
 
-    float beat = clamp(uPulse, 0.0, 1.0) * clamp(uStrength, 0.0, 1.6);
+    float beat = clamp(uPulse, 0.0, 1.0) * clamp(uStrength, 0.0, 2.0);
     // The beat speeds this clock on the CPU. Adding it here and letting the
     // pulse fall would drag the field backward.
     float t = uTime * 0.34;
@@ -91,10 +91,10 @@ void main() {
     }
     col *= 1.0 - clamp(uDim, 0.0, 0.75);
     // Brightness and color only. Moving the sample with a falling beat slides the field backward.
-    float shaped = sqrt(clamp(beat / 1.5, 0.0, 1.0));
+    float shaped = clamp(beat / 2.0, 0.0, 1.0);
     float tone = dot(col, vec3(0.299, 0.587, 0.114));
-    col = mix(vec3(tone), col, 1.0 + shaped * 0.5);
-    col *= 1.0 + shaped * 0.85;
+    col = mix(vec3(tone), col, 1.0 + shaped * 1.1);
+    col *= 1.0 + shaped * 2.4;
     gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
 }
 """

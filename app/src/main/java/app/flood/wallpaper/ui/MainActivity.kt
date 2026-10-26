@@ -79,6 +79,7 @@ import app.flood.wallpaper.audio.BeatSource
 import app.flood.wallpaper.audio.BeatSync
 import app.flood.wallpaper.audio.PlaybackVisualizer
 import app.flood.wallpaper.live.FluidWallpaperService
+import app.flood.wallpaper.media.MediaListenerService
 import app.flood.wallpaper.media.PlaybackHub
 
 class MainActivity : ComponentActivity() {
@@ -95,6 +96,9 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         BeatGate.activityVisible = true
+        if (notificationAccessEnabled(this)) {
+            MediaListenerService.ensure(this)
+        }
         BeatSync.sync(this)
     }
 
@@ -191,6 +195,7 @@ private fun FloodScreen() {
     }
 
     val source by BeatSync.source.collectAsState()
+    val listenerConnected by MediaListenerService.connected.collectAsState()
     val playbackSilent by PlaybackVisualizer.playbackSilent.collectAsState()
     val audioLauncher = rememberMicLauncher { granted ->
         if (!granted) return@rememberMicLauncher
@@ -238,10 +243,20 @@ private fun FloodScreen() {
             )
             if (accessGranted) {
                 Text(
-                    "Listening to players that post a media session. Spotify, YouTube Music, Apple Music, Tidal, and SoundCloud all do.",
+                    if (listenerConnected) {
+                        "Listening to players that post a media session. Spotify, YouTube Music, Apple Music, Tidal, and SoundCloud all do."
+                    } else {
+                        "The listener is not connected, so the song and beats stay idle."
+                    },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 )
+                OutlinedButton(
+                    onClick = { MediaListenerService.restart(context) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text("Restart listener")
+                }
             } else {
                 Text(
                     "Notification access lets Flood read the song and cover from whichever player is running. Playback stays in that app.",
@@ -357,11 +372,11 @@ private fun FloodScreen() {
                     update(settings.copy(sensitivity = it))
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    SliderRow("Beat strength", settings.beatStrength, 0f..1.5f) {
+                    SliderRow("Beat strength", settings.beatStrength, 0f..2f) {
                         update(settings.copy(beatStrength = it))
                     }
                     Text(
-                        "How hard a beat surges the flow.",
+                        "How hard a beat surges and brightens the flow.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                     )
@@ -557,11 +572,13 @@ private fun beatStatus(
     return when (source) {
         BeatSource.NeedsPermission -> "Android needs permission to measure playback. The microphone stays closed."
         BeatSource.Unavailable -> "This player blocked the playback meter. Turn on the microphone if you want the room instead."
-        else -> if (playbackSilent) {
+        BeatSource.Playback -> if (playbackSilent) {
             "No level is coming from this player. The microphone is still off."
         } else {
             "Reading the player. Nothing is recorded, and the microphone stays off."
         }
+        BeatSource.Idle -> "Waiting for a player. The microphone stays off."
+        BeatSource.Microphone -> "The microphone is on while Flood is on screen. Nothing is recorded."
     }
 }
 

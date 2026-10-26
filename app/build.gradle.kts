@@ -19,8 +19,8 @@ android {
         applicationId = "app.flood.wallpaper"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.1.1"
     }
 
     signingConfigs {
@@ -52,8 +52,19 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
     buildFeatures {
         compose = true
+    }
+}
+
+tasks.configureEach {
+    if (name.contains("ArtProfile")) {
+        enabled = false
     }
 }
 

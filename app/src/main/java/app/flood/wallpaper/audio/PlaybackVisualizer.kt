@@ -27,6 +27,8 @@ object PlaybackVisualizer {
     private var attachedSession = Int.MIN_VALUE
     private var callbackRegistered = false
     private var quietCallbacks = 0
+    private var levelSamples = 0
+    private var reportedLevel = false
 
     @Volatile
     private var active = false
@@ -172,6 +174,11 @@ object PlaybackVisualizer {
             return
         }
         val rms = waveformLevel(waveform)
+        levelSamples += 1
+        if (!reportedLevel && levelSamples >= 8) {
+            reportedLevel = true
+            Log.i(TAG, "Playback level ${"%.3f".format(rms)}")
+        }
         if (rms < 0.02f) {
             quietCallbacks += 1
             if (quietCallbacks > 40) playbackSilent.value = true
@@ -186,6 +193,8 @@ object PlaybackVisualizer {
 
     private fun releaseLocked() {
         active = false
+        levelSamples = 0
+        reportedLevel = false
         val current = visualizer
         visualizer = null
         attachedSession = Int.MIN_VALUE

@@ -1,6 +1,7 @@
 package app.flood.wallpaper.media
 
 import android.content.ComponentName
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -12,6 +13,7 @@ import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
@@ -20,6 +22,8 @@ import app.flood.wallpaper.art.CoverSampler
 import app.flood.wallpaper.audio.BeatSync
 import java.util.concurrent.Executors
 import kotlin.math.max
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class MediaListenerService : NotificationListenerService() {
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -47,8 +51,15 @@ class MediaListenerService : NotificationListenerService() {
         }
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        instance = this
+    }
+
     override fun onListenerConnected() {
         super.onListenerConnected()
+        instance = this
+        connectedState.value = true
         val component = ComponentName(this, MediaListenerService::class.java)
         val sessionManager = getSystemService(MediaSessionManager::class.java)
         manager = sessionManager
@@ -61,11 +72,18 @@ class MediaListenerService : NotificationListenerService() {
     }
 
     override fun onListenerDisconnected() {
+        connectedState.value = false
+        if (instance === this) instance = null
         bound?.unregisterCallback(controllerCallback)
         bound = null
         manager?.removeOnActiveSessionsChangedListener(sessionsListener)
         manager = null
         super.onListenerDisconnected()
+        val now = SystemClock.elapsedRealtime()
+        if (now - lastRebindAt > 5_000L) {
+            lastRebindAt = now
+            requestRebind(ComponentName(this, MediaListenerService::class.java))
+        }
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
@@ -106,8 +124,19 @@ class MediaListenerService : NotificationListenerService() {
     }
 
     override fun onDestroy() {
+        if (instance === this) {
+            instance = null
+            connectedState.value = false
+        }
         decodeExecutor.shutdownNow()
         super.onDestroy()
+    }
+
+    private fun nudge() {
+        mainHandler.post {
+            refreshSessions()
+            BeatSync.sync(this)
+        }
     }
 
     private fun refreshSessions() {
@@ -250,5 +279,27 @@ class MediaListenerService : NotificationListenerService() {
 
     companion object {
         private const val TAG = "Flood"
+        private val connectedState = MutableStateFlow(false)
+        private var lastRebindAt = 0L
+
+        @Volatile
+        private var instance: MediaListenerService? = null
+
+        val connected: StateFlow<Boolean> = connectedState
+
+        fun ensure(context: Context) {
+            val running = instance
+            if (running != null) {
+                running.nudge()
+            } else {
+                requestRebind(ComponentName(context, MediaListenerService::class.java))
+            }
+        }
+
+        fun restart(context: Context) {
+            lastRebindAt = SystemClock.elapsedRealtime()
+            requestRebind(ComponentName(context, MediaListenerService::class.java))
+            instance?.nudge()
+        }
     }
 }

@@ -1,0 +1,1 @@
+Stronger beats, with the strength slider running up to 2. Restart listener brings the song back if it stops updating.

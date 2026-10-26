@@ -51,7 +51,7 @@ The debug APK is `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## Release build
 
-F-Droid compiles this repository from the tag `v0.1.0` and signs the result. A local release build is unsigned unless `keystore.properties` exists in the project root (that file is gitignored):
+F-Droid compiles tag `v0.1.1`. The recipe publishes the signed GitHub release when its rebuild matches. The release certificate SHA-256 is `1f28815fa9d89a10888717f66c07d961250e10bf42fa24b972d8ef3ed2950750`. A local release build is unsigned unless `keystore.properties` exists in the project root (that file is gitignored):
 
 ```
 storeFile=../path/to/flood.keystore

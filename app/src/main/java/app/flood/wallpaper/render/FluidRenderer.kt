@@ -145,7 +145,7 @@ internal class FluidRenderer {
         GLES20.glUniform1f(location("uScale"), settings.fluidScale)
         GLES20.glUniform1f(location("uPulse"), PlaybackHub.pulse)
         GLES20.glUniform1f(location("uEnergy"), PlaybackHub.energy)
-        GLES20.glUniform1f(location("uStrength"), settings.beatStrength.coerceIn(0f, 1.6f))
+        GLES20.glUniform1f(location("uStrength"), settings.beatStrength.coerceIn(0f, 2f))
         GLES20.glUniform1f(location("uFade"), fade)
         GLES20.glUniform1f(location("uPan"), pan)
         GLES20.glUniform1f(location("uMode"), mode)
