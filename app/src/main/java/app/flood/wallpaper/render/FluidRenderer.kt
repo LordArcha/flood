@@ -33,6 +33,7 @@ internal class FluidRenderer {
     private var sceneFailedW = 0
     private var sceneFailedH = 0
     private var lastFrameNs = 0L
+    private val beatPulse = BeatPulse()
 
     private val quad: FloatBuffer = ByteBuffer
         .allocateDirect(8 * 4)
@@ -107,14 +108,14 @@ internal class FluidRenderer {
         if (offscreen && blitProgram != 0 && prepareScene(fieldWidth, fieldHeight)) {
             GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, sceneFbo)
             GLES20.glViewport(0, 0, sceneW, sceneH)
-            drawField(time, settings, pan, sceneW, sceneH)
+            drawField(time, settings, pan, sceneW, sceneH, dt)
             GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
             GLES20.glViewport(0, 0, width, height)
             blitScene()
         } else {
             GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
             GLES20.glViewport(0, 0, width, height)
-            drawField(time, settings, pan, width, height)
+            drawField(time, settings, pan, width, height, dt)
         }
     }
 
@@ -134,7 +135,14 @@ internal class FluidRenderer {
         }
     }
 
-    private fun drawField(time: Float, settings: LookSettings, pan: Float, viewWidth: Int, viewHeight: Int) {
+    private fun drawField(
+        time: Float,
+        settings: LookSettings,
+        pan: Float,
+        viewWidth: Int,
+        viewHeight: Int,
+        dt: Float,
+    ) {
         val mode = when (settings.colorMode) {
             ColorMode.Album, ColorMode.Picture -> 0f
             ColorMode.Tint -> 1f
@@ -151,6 +159,10 @@ internal class FluidRenderer {
         GLES20.glUniform1f(location("uMode"), mode)
         GLES20.glUniform1f(location("uDim"), settings.dim.coerceIn(0f, 0.75f))
         GLES20.glUniform1f(location("uBlur"), settings.blur.coerceIn(0f, 1f))
+        GLES20.glUniform1f(
+            location("uKick"),
+            beatPulse.advance(dt, PlaybackHub.beatMark, settings.pulse),
+        )
         GLES20.glUniform2f(location("uResolution"), viewWidth.toFloat(), viewHeight.toFloat())
         bindPlate(0, plateTex, "uPlate")
         bindPlate(1, if (oldTex != 0) oldTex else plateTex, "uOld")

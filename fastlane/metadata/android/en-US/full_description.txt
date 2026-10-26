@@ -4,6 +4,6 @@ The song and cover come from whatever player posts a media session, including Sp
 
 Live beats are measured from the audio that is already playing. The microphone stays off unless you turn it on. Nothing is recorded, and nothing is sent off the phone. Flood has no network permission.
 
-You can set the fluid scale, speed, blur, darken, and beat strength, and keep up to five presets. A preset can use the album, a tint, mono, or a picture chosen on this phone.
+You can set the fluid scale, speed, blur, darken, beat strength, and pulse, and keep up to five presets. A preset can use the album, a tint, mono, or a picture chosen on this phone.
 
 Flood is original code, released under the MIT license. It is not affiliated with Depthware or Diffuse.

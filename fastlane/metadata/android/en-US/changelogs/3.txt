@@ -1,0 +1,1 @@
+A pulse slider sets how far a beat shifts the flow.

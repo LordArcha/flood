@@ -9,8 +9,7 @@ import app.flood.wallpaper.art.ColorMode
  */
 object PresetSlots {
     const val COUNT = 5
-    private const val VERSION = "1"
-    private const val FIELDS = 11
+    private const val VERSION = "2"
 
     fun encode(settings: LookSettings): String {
         return listOf(
@@ -25,13 +24,18 @@ object PresetSlots {
             settings.beatStrength.toString(),
             settings.colorMode.stored,
             settings.customColor.toString(),
+            settings.pulse.toString(),
         ).joinToString(",")
     }
 
     fun decode(raw: String?): LookSettings? {
         if (raw.isNullOrEmpty()) return null
         val parts = raw.split(',')
-        if (parts.size != FIELDS || parts[0] != VERSION) return null
+        val pulse = when {
+            parts.size == 11 && parts[0] == "1" -> 1f
+            parts.size == 12 && parts[0] == VERSION -> number(parts[11]) ?: return null
+            else -> return null
+        }
         val fluid = number(parts[1]) ?: return null
         val motion = number(parts[2]) ?: return null
         val blur = number(parts[3]) ?: return null
@@ -57,6 +61,7 @@ object PresetSlots {
             beatStrength = strength,
             colorMode = mode,
             customColor = color,
+            pulse = pulse,
         )
     }
 

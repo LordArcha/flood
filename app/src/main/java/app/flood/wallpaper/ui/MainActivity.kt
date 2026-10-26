@@ -381,6 +381,16 @@ private fun FloodScreen() {
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                     )
                 }
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    SliderRow("Pulse", settings.pulse, 0f..2f) {
+                        update(settings.copy(pulse = it))
+                    }
+                    Text(
+                        "How far a beat shifts the flow.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                    )
+                }
             }
             Text("Color", style = MaterialTheme.typography.titleMedium)
             FlowRow(

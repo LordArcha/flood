@@ -27,6 +27,7 @@ uniform float uPan;
 uniform float uMode;
 uniform float uDim;
 uniform float uBlur;
+uniform float uKick;
 uniform vec2 uResolution;
 
 float hash(vec2 p) {
@@ -63,6 +64,9 @@ void main() {
     float t = uTime * 0.34;
     vec2 q = vec2(fbm(p + vec2(t, 0.2), turb), fbm(p + vec2(2.8, t * 0.7), turb));
     float push = mix(0.62, 1.1, turb);
+    // A short kick in the warp. It is not added to the clock or the sample position,
+    // so the fade does not drag the field backward, and it does not brighten the plate.
+    push *= 1.0 + clamp(uKick, 0.0, 1.0) * 0.12;
     vec2 warp = vec2(
         fbm(p + q * push + vec2(t * 0.85, 1.3), turb),
         fbm(p + q * push + vec2(5.1, t * 0.55), turb)

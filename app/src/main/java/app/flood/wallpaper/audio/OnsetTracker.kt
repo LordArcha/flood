@@ -1,5 +1,6 @@
 package app.flood.wallpaper.audio
 
+import app.flood.wallpaper.media.PlaybackHub
 import kotlin.math.exp
 
 /**
@@ -24,6 +25,7 @@ class OnsetTracker {
         if (rms > threshold && rms > 0.02f && nowMs - lastBeatAt > 200) {
             pulse = 1f
             lastBeatAt = nowMs
+            PlaybackHub.markBeat()
         } else if (pulse > 0f) {
             val age = (nowMs - lastBeatAt).coerceIn(0L, 8_000L)
             pulse = exp(-age / 1_000.0).toFloat()
@@ -59,6 +61,7 @@ class LevelOnset {
         if (flux > need && rms > 0.02f && nowMs - lastBeatAt > 240) {
             pulse = 1f
             lastBeatAt = nowMs
+            PlaybackHub.markBeat()
         } else if (pulse > 0f) {
             pulse = playbackEnvelope(nowMs - lastBeatAt)
         }

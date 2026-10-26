@@ -22,9 +22,9 @@ Description: |-
     stays off unless you turn it on. Nothing is recorded, and nothing is sent off
     the phone. Flood has no network permission.
 
-    You can set the fluid scale, speed, blur, darken, and beat strength, and keep
-    up to five presets. A preset can use the album, a tint, mono, or a picture
-    chosen on this phone.
+    You can set the fluid scale, speed, blur, darken, beat strength, and pulse,
+    and keep up to five presets. A preset can use the album, a tint, mono, or a
+    picture chosen on this phone.
 
     Flood is original code, released under the MIT license. It is not affiliated
     with Depthware or Diffuse.
@@ -33,16 +33,16 @@ RepoType: git
 Repo: https://github.com/LordArcha/flood.git
 
 Builds:
-  - versionName: 0.1.1
-    versionCode: 2
-    commit: v0.1.1
+  - versionName: 0.1.2
+    versionCode: 3
+    commit: v0.1.2
     gradle:
       - yes
-    binary: https://github.com/LordArcha/flood/releases/download/v0.1.1/flood-0.1.1.apk
+    binary: https://github.com/LordArcha/flood/releases/download/v0.1.2/flood-0.1.2.apk
 
 AllowedAPKSigningKeys: 1f28815fa9d89a10888717f66c07d961250e10bf42fa24b972d8ef3ed2950750
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
 UpdateCheckData: app/build.gradle.kts|versionCode = (\d+)|.|versionName = "(.+)"
-CurrentVersion: 0.1.1
-CurrentVersionCode: 2
+CurrentVersion: 0.1.2
+CurrentVersionCode: 3

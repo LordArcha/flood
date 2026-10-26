@@ -24,6 +24,13 @@ object PlaybackHub {
     @Volatile
     var pulse: Float = 0f
 
+    @Volatile
+    var beatMark: Int = 0
+
+    fun markBeat() {
+        beatMark += 1
+    }
+
     fun restore(title: String, artist: String, album: String, artwork: Bitmap, colors: CoverColors, artHash: Int) {
         state.value = NowPlaying(
             title = title,

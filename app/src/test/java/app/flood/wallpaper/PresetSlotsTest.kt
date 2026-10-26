@@ -20,6 +20,7 @@ class PresetSlotsTest {
             useMicrophone = true,
             sensitivity = 1.15f,
             beatStrength = 0.59f,
+            pulse = 1.4f,
             colorMode = ColorMode.Tint,
             customColor = -7350529,
             keepArt = false,
@@ -33,6 +34,7 @@ class PresetSlotsTest {
         assertTrue(decoded.beats)
         assertEquals(1.15f, decoded.sensitivity, 0.0001f)
         assertEquals(0.59f, decoded.beatStrength, 0.0001f)
+        assertEquals(1.4f, decoded.pulse, 0.0001f)
         assertEquals(ColorMode.Tint, decoded.colorMode)
         assertEquals(-7350529, decoded.customColor)
         assertEquals(
@@ -61,6 +63,9 @@ class PresetSlotsTest {
         assertNull(PresetSlots.decode("1,0.4,0.74,0,0.065,blur,1,1.15,0.59,rainbow,1"))
         assertNull(PresetSlots.decode("1,0.4,0.74,0,0.065,blur,1,1.15,0.59,album,nope"))
         assertNull(PresetSlots.decode("1,0.4,0.74,0,0.065,fluted,0,1,1,mono,1,extra"))
+        assertNull(PresetSlots.decode("2,0.4,0.74,0,0.065,blur,1,1.15,0.59,album,1,nope"))
+        val older = PresetSlots.decode("1,0.4,0.74,0,0.065,blur,1,1.15,0.59,album,-7350529")
+        assertEquals(1f, older!!.pulse, 0.0001f)
     }
 
     @Test

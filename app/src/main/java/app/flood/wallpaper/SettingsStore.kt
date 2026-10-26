@@ -25,6 +25,7 @@ data class LookSettings(
     val useMicrophone: Boolean = false,
     val sensitivity: Float = 1f,
     val beatStrength: Float = 1f,
+    val pulse: Float = 1f,
     val colorMode: ColorMode = ColorMode.Album,
     val customColor: Int = DEFAULT_TINT,
     val keepArt: Boolean = true,
@@ -40,6 +41,7 @@ private const val KEY_DIM = "dim"
 private const val KEY_GLASS = "glass"
 private const val KEY_BEATS = "beats"
 private const val KEY_STRENGTH = "beat_strength"
+private const val KEY_PULSE = "pulse"
 private const val KEY_MIC = "use_microphone"
 private const val KEY_SENSITIVITY = "sensitivity"
 private const val KEY_MODE = "color_mode"
@@ -65,6 +67,7 @@ object SettingsStore {
             useMicrophone = prefs.getBoolean(KEY_MIC, false),
             sensitivity = prefs.getFloat(KEY_SENSITIVITY, 1f),
             beatStrength = prefs.getFloat(KEY_STRENGTH, 1f),
+            pulse = prefs.getFloat(KEY_PULSE, 1f),
             colorMode = ColorMode.fromStored(prefs.getString(KEY_MODE, null)),
             customColor = prefs.getInt(KEY_COLOR, DEFAULT_TINT),
             keepArt = prefs.getBoolean(KEY_KEEP, true),
@@ -82,6 +85,7 @@ object SettingsStore {
             .putBoolean(KEY_MIC, settings.useMicrophone)
             .putFloat(KEY_SENSITIVITY, settings.sensitivity)
             .putFloat(KEY_STRENGTH, settings.beatStrength)
+            .putFloat(KEY_PULSE, settings.pulse)
             .putString(KEY_MODE, settings.colorMode.stored)
             .putInt(KEY_COLOR, settings.customColor)
             .putBoolean(KEY_KEEP, settings.keepArt)
